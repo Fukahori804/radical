@@ -1,0 +1,51 @@
+<h1>Detail</h1>
+<h3>詳細</h3>
+<div class="movie">
+  <p><%= @movie.name %></p>
+  <p><%= @movie.genre %></p>
+  <p><%= @movie.day %></p>
+  <p><%= @movie.directorsname %></p>
+  <p><%= @movie.image %></p>
+  <p><%= @movie.review %></p>
+  <p><%= @movie.created_at %></p>
+  <% if user_signed_in? %>
+      <% if current_user.already_liked?(@movie) %>
+        <%= button_to movie_like_path(@movie), method: :delete do %>
+          <i class="fas fa-heart"></i><%= @movie.likes.count %>
+        <% end %>
+
+      <% else %>
+        <%= button_to movie_likes_path(@movie), method: :post do %>
+          <i class="fa-regular fa-heart"></i><%= @movie.likes.count %>
+           <% end %> 
+             
+      <% end %>
+    <% else %>
+      <p>いいねの数 = </p><%= @movie.likes.count %>
+    <% end %>
+  <%= link_to "編集する", edit_movie_path(@movie.id) %>
+</div>
+
+<div class="comment-wrapper">
+  <p>コメント一覧</p>
+  <% @comments.each do |c| %>
+    <div>
+      <%= c.user.email unless c.user.blank? %>
+      <br>
+      <%= c.content %>
+    </div>
+      <br>
+  <% end %>
+
+  <% if user_signed_in? %>
+    <%= form_with(model: [@movie, @comment], local: true) do |f| %>
+      <%= f.text_area :content %>
+      <%= button_tag type: "submit" do %>
+        <i class="far fa-comments"></i> コメントする
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+  
+<%= link_to "一覧に戻る", movies_path %>
+
